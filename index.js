@@ -6,35 +6,31 @@ const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 
-// CORS precisa vir antes de qualquer app.use() ou rota
 app.use(cors({
-  origin: 'http://localhost:5173', // seu front-end local
-  credentials: true,              // ← ESSENCIAL para cookies funcionarem
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: 'https://dashboard-stream.netlify.app',
+  credentials: true
 }));
 
 app.use(cookieParser());
 app.use(express.json());
 
-// Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
 );
 
-// Util: seta o cookie com o token
+// Helper para setar cookie com token
 function setAuthCookie(res, token) {
   res.cookie('sb-access-token', token, {
     httpOnly: true,
-    secure: false, // ← true em produção com HTTPS
+    secure: false, // em produção: true com HTTPS
     sameSite: 'lax',
     maxAge: 60 * 60 * 1000,
     path: '/'
   });
 }
 
-// Signup: cria usuário no auth + tabela
+// Cadastro
 app.post('/signup', async (req, res) => {
   const { email, password, name, phone, role } = req.body;
 
@@ -59,7 +55,7 @@ app.post('/signup', async (req, res) => {
   res.status(201).json({ message: 'Usuário criado com sucesso!' });
 });
 
-// Login: autentica e salva token no cookie
+// Login
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -75,7 +71,7 @@ app.post('/login', async (req, res) => {
   res.json({ message: 'Login bem-sucedido!', user: data.user });
 });
 
-// Profile: retorna dados do auth + tabela users
+// Profile
 app.get('/profile', async (req, res) => {
   const token = req.cookies['sb-access-token'] || req.headers.authorization?.replace('Bearer ', '');
 
@@ -107,23 +103,22 @@ app.get('/profile', async (req, res) => {
     name: userData.name,
     phone: userData.phone,
     role: userData.role,
-    created_at: user.created_at,
-    email_confirmed_at: user.email_confirmed_at,
-    last_sign_in_at: user.last_sign_in_at,
     user_metadata: user.user_metadata
   });
 });
 
-// Logout: remove o cookie
+// Logout
 app.post('/logout', (req, res) => {
-  res.clearCookie('sb-access-token', { path: '/' });
+  res.clearCookie('sb-access-token', {
+    path: '/',
+    sameSite: 'lax',
+    secure: false // true em produção com HTTPS
+  });
   res.json({ message: 'Logout efetuado' });
 });
 
-// Aceita OPTIONS (preflight)
-app.options('*', cors());
 
-// Start do servidor
+// Inicia o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
