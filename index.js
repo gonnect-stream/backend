@@ -7,6 +7,7 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 
 app.use(cors({
+//   origin: 'http://localhost:5173',
   origin: 'https://dashboard-stream.netlify.app',
   credentials: true
 }));
@@ -23,7 +24,7 @@ const supabase = createClient(
 function setAuthCookie(res, token) {
   res.cookie('sb-access-token', token, {
     httpOnly: true,
-    secure: false, // em produção: true com HTTPS
+    secure: true, // em produção: true com HTTPS
     sameSite: 'lax',
     maxAge: 60 * 60 * 1000,
     path: '/'
