@@ -25,7 +25,7 @@ function setAuthCookie(res, token) {
  res.cookie('sb-access-token', token, {
   httpOnly: true,
   secure: true, // ← OBRIGATÓRIO para HTTPS (Netlify usa HTTPS)
-  sameSite: 'lax',
+  sameSite: 'none',
   maxAge: 60 * 60 * 1000,
   path: '/'
 });
@@ -70,6 +70,7 @@ app.post('/login', async (req, res) => {
   setAuthCookie(res, token);
 
   res.json({ message: 'Login bem-sucedido!', user: data.user });
+  res.json({ message: 'Aqui!', user: data.user });
 });
 
 // Profile
@@ -80,36 +81,36 @@ app.get('/profile', async (req, res) => {
   console.log(res)
 
 
-//   if (!token) {
-//     return res.status(401).json({ error: 'Token não fornecido.' });
-//   }
+  if (!token) {
+    return res.status(401).json({ error: 'Token não fornecido.' });
+  }
 
-//   const { data: authData, error: authError } = await supabase.auth.getUser(token);
+  const { data: authData, error: authError } = await supabase.auth.getUser(token);
 
-//   if (authError || !authData?.user) {
-//     return res.status(401).json({ error: 'Token inválido ou usuário não autenticado.' });
-//   }
+  if (authError || !authData?.user) {
+    return res.status(401).json({ error: 'Token inválido ou usuário não autenticado.' });
+  }
 
-//   const user = authData.user;
+  const user = authData.user;
 
-//   const { data: userData, error: userError } = await supabase
-//     .from('users')
-//     .select('name, phone, role')
-//     .eq('id', user.id)
-//     .single();
+  const { data: userData, error: userError } = await supabase
+    .from('users')
+    .select('name, phone, role')
+    .eq('id', user.id)
+    .single();
 
-//   if (userError || !userData) {
-//     return res.status(404).json({ error: 'Usuário não encontrado na tabela users.' });
-//   }
+  if (userError || !userData) {
+    return res.status(404).json({ error: 'Usuário não encontrado na tabela users.' });
+  }
 
-//   res.json({
-//     id: user.id,
-//     email: user.email,
-//     name: userData.name,
-//     phone: userData.phone,
-//     role: userData.role,
-//     user_metadata: user.user_metadata
-//   });
+  res.json({
+    id: user.id,
+    email: user.email,
+    name: userData.name,
+    phone: userData.phone,
+    role: userData.role,
+    user_metadata: user.user_metadata
+  });
 });
 
 // Logout
