@@ -76,9 +76,9 @@ app.post('/login', async (req, res) => {
 app.get('/profile', async (req, res) => {
   const token = req.cookies['sb-access-token'] || req.headers.authorization?.replace('Bearer ', '');
 
-  console.log(req)
+  console.log("AQUI")
   console.log(res)
-  console.log(token)
+
 
 //   if (!token) {
 //     return res.status(401).json({ error: 'Token não fornecido.' });
