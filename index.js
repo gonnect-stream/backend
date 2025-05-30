@@ -22,13 +22,13 @@ const supabase = createClient(
 
 // Helper para setar cookie com token
 function setAuthCookie(res, token) {
-  res.cookie('sb-access-token', token, {
-    httpOnly: true,
-    secure: true, // em produção: true com HTTPS
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 1000,
-    path: '/'
-  });
+ res.cookie('sb-access-token', token, {
+  httpOnly: true,
+  secure: true, // ← OBRIGATÓRIO para HTTPS (Netlify usa HTTPS)
+  sameSite: 'lax',
+  maxAge: 60 * 60 * 1000,
+  path: '/'
+});
 }
 
 // Cadastro
