@@ -118,6 +118,11 @@ app.post('/logout', (req, res) => {
   res.json({ message: 'Logout efetuado' });
 });
 
+app.get('/debug/cookies', (req, res) => {
+  console.log('Cookies recebidos:', req.cookies);
+  res.json(req.cookies);
+});
+
 
 // Inicia o servidor
 const PORT = process.env.PORT || 3000;
