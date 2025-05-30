@@ -76,36 +76,40 @@ app.post('/login', async (req, res) => {
 app.get('/profile', async (req, res) => {
   const token = req.cookies['sb-access-token'] || req.headers.authorization?.replace('Bearer ', '');
 
-  if (!token) {
-    return res.status(401).json({ error: 'Token não fornecido.' });
-  }
+  console.log(req)
+  console.log(res)
+  console.log(token)
 
-  const { data: authData, error: authError } = await supabase.auth.getUser(token);
+//   if (!token) {
+//     return res.status(401).json({ error: 'Token não fornecido.' });
+//   }
 
-  if (authError || !authData?.user) {
-    return res.status(401).json({ error: 'Token inválido ou usuário não autenticado.' });
-  }
+//   const { data: authData, error: authError } = await supabase.auth.getUser(token);
 
-  const user = authData.user;
+//   if (authError || !authData?.user) {
+//     return res.status(401).json({ error: 'Token inválido ou usuário não autenticado.' });
+//   }
 
-  const { data: userData, error: userError } = await supabase
-    .from('users')
-    .select('name, phone, role')
-    .eq('id', user.id)
-    .single();
+//   const user = authData.user;
 
-  if (userError || !userData) {
-    return res.status(404).json({ error: 'Usuário não encontrado na tabela users.' });
-  }
+//   const { data: userData, error: userError } = await supabase
+//     .from('users')
+//     .select('name, phone, role')
+//     .eq('id', user.id)
+//     .single();
 
-  res.json({
-    id: user.id,
-    email: user.email,
-    name: userData.name,
-    phone: userData.phone,
-    role: userData.role,
-    user_metadata: user.user_metadata
-  });
+//   if (userError || !userData) {
+//     return res.status(404).json({ error: 'Usuário não encontrado na tabela users.' });
+//   }
+
+//   res.json({
+//     id: user.id,
+//     email: user.email,
+//     name: userData.name,
+//     phone: userData.phone,
+//     role: userData.role,
+//     user_metadata: user.user_metadata
+//   });
 });
 
 // Logout
