@@ -7,7 +7,7 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 
 app.use(cors({
-//   origin: 'http://localhost:5173',
+  // origin: 'http://localhost:5173',
   origin: 'https://dashboard-stream.netlify.app',
   credentials: true
 }));
@@ -126,6 +126,24 @@ app.post('/logout', (req, res) => {
 app.get('/debug/cookies', (req, res) => {
   console.log('Cookies recebidos:', req.cookies);
   res.json(req.cookies);
+});
+
+app.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: 'E-mail obrigatório.' });
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://dashboard-stream.netlify.app/reset-password'
+  });
+
+  if (error) {
+    return res.status(500).json({ error: 'Erro ao enviar e-mail de recuperação.' });
+  }
+
+  res.status(200).json({ message: 'E-mail de recuperação enviado.' });
 });
 
 
