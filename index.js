@@ -8,8 +8,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
-    // origin: ["https://dashboard-stream.netlify.app", "http://localhost:5173"],
+    // origin: 'http://localhost:5173',
+    origin: ["https://dashboard-stream.netlify.app", "http://localhost:5173"],
     credentials: true,
   })
 );
@@ -123,15 +123,13 @@ app.get("/profile", async (req, res) => {
 });
 
 // Logout
-app.post('/logout', (req, res) => {
-  res.clearCookie('sb-access-token', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    path: '/', // deve ser exatamente igual ao usado no login
+app.post("/logout", (req, res) => {
+  res.clearCookie("sb-access-token", {
+    path: "/",
+    sameSite: "lax",
+    secure: true, // true em produção com HTTPS
   });
-
-  res.status(200).json({ message: 'Logout realizado com sucesso' });
+  res.json({ message: "Logout efetuado" });
 });
 
 app.get("/debug/cookies", (req, res) => {
