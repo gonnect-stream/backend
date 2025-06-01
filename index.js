@@ -123,18 +123,15 @@ app.get("/profile", async (req, res) => {
 });
 
 // Logout
-app.post("/logout", (req, res) => {
-  res.clearCookie("sb-access-token", {
-    path: "/",
-    sameSite: "lax",
-    secure: true, // true em produção com HTTPS
+app.post('/logout', (req, res) => {
+  res.clearCookie('sb-access-token', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    path: '/', // deve ser exatamente igual ao usado no login
   });
-  res.json({ message: "Logout efetuado" });
-});
 
-app.get("/debug/cookies", (req, res) => {
-  console.log("Cookies recebidos:", req.cookies);
-  res.json(req.cookies);
+  res.status(200).json({ message: 'Logout realizado com sucesso' });
 });
 
 
