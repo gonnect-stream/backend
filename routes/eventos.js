@@ -77,23 +77,26 @@ router.get("/", async (req, res) => {
   }
 });
 
-//Detalhes do eventorouter.get("/:id", async (req, res) => {
-const { id } = req.params;
+//Detalhes do evento
 
-try {
-  const { data, error } = await supabase
-    .from("eventos")
-    .select("*")
-    .eq("id", id)
-    .single(); // garante um único resultado
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
 
-  if (error) throw error;
+  try {
+    const { data, error } = await supabase
+      .from("eventos")
+      .select("*")
+      .eq("id", id)
+      .single(); // garante um único resultado
 
-  res.status(200).json(data);
-} catch (err) {
-  console.error("Erro ao buscar evento por ID:", err.message);
-  res.status(500).json({ error: "Erro ao buscar evento." });
-}
+    if (error) throw error;
+
+    res.status(200).json(data);
+  } catch (err) {
+    console.error("Erro ao buscar evento por ID:", err.message);
+    res.status(500).json({ error: "Erro ao buscar evento." });
+  }
+});
 
 // router.get("/", async (req, res) => {
 
