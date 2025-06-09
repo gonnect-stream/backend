@@ -12,24 +12,22 @@ const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 router.post("/", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
-    const { nome } = req.body;
 
     if (!file) {
       return res.status(400).json({ error: "Nenhum arquivo enviado." });
     }
 
-    console.log("📥 Upload recebido:", {
+    console.log("📦 Arquivo recebido:", {
       nome: file.originalname,
       tipo: file.mimetype,
-      tamanhoKB: (file.size / 1024).toFixed(1),
-      nomePersonalizado: nome,
+      tamanhoKB: Math.round(file.size / 1024),
     });
 
     const form = new FormData();
     form.append("file", file.buffer, file.originalname);
 
-    if (nome) {
-      form.append("name", nome);
+    if (req.body.name) {
+      form.append("name", req.body.name);
     }
 
     const response = await axios.post(
