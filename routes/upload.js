@@ -6,12 +6,10 @@ const FormData = require("form-data");
 const router = express.Router();
 const upload = multer();
 
-const CLOUDFLARE_ACCOUNT_ID = a7f4e1627ff1e95968d0281fa866eb92
-const CLOUDFLARE_API_TOKEN = STf_3CDSjojC9OLEgOj1rqKmbfvL8pjbEApyhP_e
+const CLOUDFLARE_ACCOUNT_ID = "a7f4e1627ff1e95968d0281fa866eb92"
+const CLOUDFLARE_API_TOKEN = "STf_3CDSjojC9OLEgOj1rqKmbfvL8pjbEApyhP_e"
 
 router.post("/", upload.single("file"), async (req, res) => {
-    console.log(CLOUDFLARE_ACCOUNT_ID)
-    console.log(CLOUDFLARE_API_TOKEN)
 
   try {
     const file = req.file;
