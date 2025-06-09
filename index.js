@@ -1,11 +1,13 @@
 require("dotenv").config();
+const app = express();
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { createClient } = require("@supabase/supabase-js");
-const uploadRoute = require("./routes/upload");
 
-const app = express();
+const uploadRoute = require("./routes/upload");
+const eventosRoute = require("./routes/eventos");
+
 
 // CORS configurado para frontend local e Netlify
 app.use(
@@ -157,6 +159,9 @@ app.post("/forgot-password", async (req, res) => {
 
 // Upload de imagem (rota para Cloudflare Images)
 app.use("/api/upload", uploadRoute);
+
+// Get listagem de eventos
+app.use("/api/eventos", eventosRoute);
 
 // Inicia o servidor
 const PORT = process.env.PORT || 3000;
