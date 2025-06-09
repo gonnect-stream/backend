@@ -12,6 +12,7 @@ const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 router.post("/", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
+    const { novoNome } = req.body;
 
     if (!file) {
       return res.status(400).json({ error: "Nenhum arquivo enviado." });
@@ -21,11 +22,11 @@ router.post("/", upload.single("file"), async (req, res) => {
       nome: file.originalname,
       tipo: file.mimetype,
       tamanhoKB: Math.round(file.size / 1024),
-      nomePersonalizado: file.name
+      nomePersonalizado: req.body.novoNome,
     });
 
     const form = new FormData();
-    form.append("file", file.buffer, file.name);
+    form.append("file", file.buffer, novoNome);
 
     if (req.body.name) {
       form.append("name", req.body.name);
