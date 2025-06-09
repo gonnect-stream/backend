@@ -23,7 +23,6 @@ router.post("/", upload.single("file"), async (req, res) => {
       tipo: file.mimetype,
       tamanhoKB: (file.size / 1024).toFixed(1),
       nomePersonalizado: name,
-      metadataRecebida: metadata,
     });
 
     const form = new FormData();
