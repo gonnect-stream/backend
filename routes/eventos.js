@@ -26,6 +26,7 @@ const supabase = createClient(
 //   }
 // });
 
+//Listar eventos
 router.get("/", async (req, res) => {
   console.log("TESTANDO A ROTA 1");
 
@@ -63,20 +64,36 @@ router.get("/", async (req, res) => {
 
     if (error) throw error;
 
-    res
-      .status(200)
-      .json({
-        eventos: data,
-        total: count,
-        page: pageNumber,
-        limit: limitNumber,
-        totalPaginas: Math.ceil(count / limitNumber),
-      });
+    res.status(200).json({
+      eventos: data,
+      total: count,
+      page: pageNumber,
+      limit: limitNumber,
+      totalPaginas: Math.ceil(count / limitNumber),
+    });
   } catch (err) {
     console.error("❌ Erro ao buscar eventos:", err.message);
     res.status(500).json({ error: "Erro ao buscar eventos" });
   }
 });
+
+//Detalhes do eventorouter.get("/:id", async (req, res) => {
+const { id } = req.params;
+
+try {
+  const { data, error } = await supabase
+    .from("eventos")
+    .select("*")
+    .eq("id", id)
+    .single(); // garante um único resultado
+
+  if (error) throw error;
+
+  res.status(200).json(data);
+} catch (err) {
+  console.error("Erro ao buscar evento por ID:", err.message);
+  res.status(500).json({ error: "Erro ao buscar evento." });
+}
 
 // router.get("/", async (req, res) => {
 
