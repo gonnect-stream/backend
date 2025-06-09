@@ -12,9 +12,16 @@ const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 router.post("/", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
+
     if (!file) {
-      return res.status(400).json({ error: "Nenhum arquivo recebido." });
+      return res.status(400).json({ error: "Nenhum arquivo enviado." });
     }
+
+    console.log("📦 Arquivo recebido:", {
+      nome: file.originalname,
+      tipo: file.mimetype,
+      tamanhoKB: Math.round(file.size / 1024),
+    });
 
     const form = new FormData();
     form.append("file", file.buffer, file.originalname);
@@ -30,12 +37,18 @@ router.post("/", upload.single("file"), async (req, res) => {
       }
     );
 
-    const thumbUrl =
-      response.data.result.variants[0] || response.data.result.url;
+    const thumbUrl = response.data.result.variants?.[0] || response.data.result.url;
 
+    console.log("✅ Upload para Cloudflare bem-sucedido:", thumbUrl);
     res.json({ thumbUrl });
   } catch (err) {
-    console.error("Cloudflare response error:", err.response?.data || err.message);
+    console.error("❌ Erro ao fazer upload para Cloudflare:");
+    if (err.response?.data) {
+      console.error(err.response.data);
+    } else {
+      console.error(err.message);
+    }
+
     res.status(500).json({
       error: "Falha no upload para o Cloudflare.",
       details: err.response?.data || err.message,
