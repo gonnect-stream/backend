@@ -164,7 +164,7 @@ app.use("/api/upload", uploadRoute);
 app.use("/api/eventos", eventosRoute);
 
 // Delete um evento
-app.delete("/api/eventos", eventosRoute);
+app.delete("/api/eventos:id", eventosRoute);
 
 
 // Inicia o servidor
