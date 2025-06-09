@@ -11,15 +11,26 @@ const supabase = createClient(
 
 // GET /api/eventos → Lista todos os eventos
 router.get("/", async (req, res) => {
+  const { status, page = 1, limit = 10 } = req.query;
+
+  const offset = (parseInt(page) - 1) * parseInt(limit);
+
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from("eventos")
-      .select("*")
-      .order("data", { ascending: false });
+      .select("*", { count: "exact" }) // conta total
+      .order("data", { ascending: false })
+      .range(offset, offset + parseInt(limit) - 1);
+
+    if (status && status !== "todos") {
+      query = query.eq("status", status);
+    }
+
+    const { data, error, count } = await query;
 
     if (error) throw error;
 
-    res.status(200).json(data);
+    res.status(200).json({ eventos: data, total: count });
   } catch (err) {
     console.error("Erro ao buscar eventos:", err.message);
     res.status(500).json({ error: "Erro ao buscar eventos" });
