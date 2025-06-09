@@ -12,19 +12,26 @@ const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 router.post("/", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
+    const { name } = req.body;
 
     if (!file) {
       return res.status(400).json({ error: "Nenhum arquivo enviado." });
     }
 
-    console.log("📦 Arquivo recebido:", {
+    console.log("📥 Upload recebido:", {
       nome: file.originalname,
       tipo: file.mimetype,
-      tamanhoKB: Math.round(file.size / 1024),
+      tamanhoKB: (file.size / 1024).toFixed(1),
+      nomePersonalizado: name,
+      metadataRecebida: metadata,
     });
 
     const form = new FormData();
     form.append("file", file.buffer, file.originalname);
+
+    if (name) {
+      form.append("name", name);
+    }
 
     const response = await axios.post(
       `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/images/v1`,
@@ -37,7 +44,8 @@ router.post("/", upload.single("file"), async (req, res) => {
       }
     );
 
-    const thumbUrl = response.data.result.variants?.[0] || response.data.result.url;
+    const thumbUrl =
+      response.data.result.variants?.[0] || response.data.result.url;
 
     console.log("✅ Upload para Cloudflare bem-sucedido:", thumbUrl);
     res.json({ thumbUrl });
