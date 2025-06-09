@@ -21,10 +21,11 @@ router.post("/", upload.single("file"), async (req, res) => {
       nome: file.originalname,
       tipo: file.mimetype,
       tamanhoKB: Math.round(file.size / 1024),
+      nomePersonalizado: file.name
     });
 
     const form = new FormData();
-    form.append("file", file.buffer, file.originalname);
+    form.append("file", file.buffer, file.name);
 
     if (req.body.name) {
       form.append("name", req.body.name);
