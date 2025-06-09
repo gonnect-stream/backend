@@ -1,5 +1,4 @@
 require("dotenv").config();
-const app = express();
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -8,6 +7,7 @@ const { createClient } = require("@supabase/supabase-js");
 const uploadRoute = require("./routes/upload");
 const eventosRoute = require("./routes/eventos");
 
+const app = express();
 
 // CORS configurado para frontend local e Netlify
 app.use(
