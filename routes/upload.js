@@ -10,50 +10,53 @@ const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 
 router.post("/", upload.single("file"), async (req, res) => {
-  try {
-    const file = req.file;
+    console.log(CLOUDFLARE_ACCOUNT_ID)
+    console.log(CLOUDFLARE_API_TOKEN)
 
-    if (!file) {
-      return res.status(400).json({ error: "Nenhum arquivo enviado." });
-    }
+//   try {
+//     const file = req.file;
 
-    console.log("📦 Arquivo recebido:", {
-      nome: file.originalname,
-      tipo: file.mimetype,
-      tamanhoKB: Math.round(file.size / 1024),
-    });
+//     if (!file) {
+//       return res.status(400).json({ error: "Nenhum arquivo enviado." });
+//     }
 
-    const form = new FormData();
-    form.append("file", file.buffer, file.originalname);
+//     console.log("📦 Arquivo recebido:", {
+//       nome: file.originalname,
+//       tipo: file.mimetype,
+//       tamanhoKB: Math.round(file.size / 1024),
+//     });
 
-    const response = await axios.post(
-      `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/images/v1`,
-      form,
-      {
-        headers: {
-          Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`,
-          ...form.getHeaders(),
-        },
-      }
-    );
+//     const form = new FormData();
+//     form.append("file", file.buffer, file.originalname);
 
-    const thumbUrl = response.data.result.variants?.[0] || response.data.result.url;
+//     const response = await axios.post(
+//       `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/images/v1`,
+//       form,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`,
+//           ...form.getHeaders(),
+//         },
+//       }
+//     );
 
-    console.log("✅ Upload para Cloudflare bem-sucedido:", thumbUrl);
-    res.json({ thumbUrl });
-  } catch (err) {
-    console.error("❌ Erro ao fazer upload para Cloudflare:");
-    if (err.response?.data) {
-      console.error(err.response.data);
-    } else {
-      console.error(err.message);
-    }
+//     const thumbUrl = response.data.result.variants?.[0] || response.data.result.url;
 
-    res.status(500).json({
-      error: "Falha no upload para o Cloudflare.",
-      details: err.response?.data || err.message,
-    });
-  }
+//     console.log("✅ Upload para Cloudflare bem-sucedido:", thumbUrl);
+//     res.json({ thumbUrl });
+//   } catch (err) {
+//     console.error("❌ Erro ao fazer upload para Cloudflare:");
+//     if (err.response?.data) {
+//       console.error(err.response.data);
+//     } else {
+//       console.error(err.message);
+//     }
+
+//     res.status(500).json({
+//       error: "Falha no upload para o Cloudflare.",
+//       details: err.response?.data || err.message,
+//     });
+//   }
 });
 
 module.exports = router;
