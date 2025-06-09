@@ -163,6 +163,10 @@ app.use("/api/upload", uploadRoute);
 // Get listagem de eventos
 app.use("/api/eventos", eventosRoute);
 
+// Delete um evento
+app.delete("/api/eventos", eventosRoute);
+
+
 // Inicia o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -26,4 +26,24 @@ router.get("/", async (req, res) => {
   }
 });
 
+// DELETE /api/eventos/:id → Remove um evento pelo ID
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { error } = await supabase
+      .from("eventos")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+
+    res.status(200).json({ message: "Evento deletado com sucesso." });
+  } catch (err) {
+    console.error("Erro ao deletar evento:", err.message);
+    res.status(500).json({ error: "Erro ao deletar evento." });
+  }
+});
+
+
 module.exports = router;
